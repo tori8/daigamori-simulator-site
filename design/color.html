@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>色と質感が決まる仕組み | 設計文書</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍵</text></svg>" />
+<link rel="stylesheet" href="./design.css" />
+</head>
+<body>
+<div class="wrap">
+  <div class="crumbs"><a href="./index.html">設計文書トップ</a> › <a href="./screen.html">画面の見方</a> › 色と質感が決まる仕組み</div>
+  <h1>STEP 2: 色と質感が決まる仕組み<span class="alpha">アルファ版</span></h1>
+  <p class="lead">「なぜその色になるのか」。シミュレーターの心臓部を図解します。</p>
+
+  <h2>色は足し算で決まる</h2>
+  <div class="panel">
+    <p>本物の陶器と同じように、シミュレーターの色も1つの要素では決まりません。<strong>土の色を土台に、釉薬の色を重ね、焼き方の影響を加える</strong>——という足し算で最終の色を作ります。</p>
+  </div>
+  <div class="figure">
+    <svg viewBox="0 0 820 150" role="img" aria-label="色の足し算: 土の色 + 釉薬の色 + 焼成の影響 + 組み合わせルール = 最終の色">
+      <g font-family="Hiragino Kaku Gothic ProN, Hiragino Sans, sans-serif" text-anchor="middle">
+        <rect x="14" y="30" width="130" height="76" rx="12" fill="#8b4a36"/>
+        <text x="79" y="62" font-size="13" fill="#fff" font-weight="600">土の色</text>
+        <text x="79" y="84" font-size="11" fill="#f3ddd0">例: 赤土</text>
+        <text x="163" y="76" font-size="22" fill="#6b7480">+</text>
+        <rect x="182" y="30" width="130" height="76" rx="12" fill="#afb197"/>
+        <text x="247" y="62" font-size="13" fill="#fff" font-weight="600">釉薬の色</text>
+        <text x="247" y="84" font-size="11" fill="#eef0e2">例: 灰釉</text>
+        <text x="331" y="76" font-size="22" fill="#6b7480">+</text>
+        <rect x="350" y="30" width="130" height="76" rx="12" fill="#5c5348"/>
+        <text x="415" y="62" font-size="13" fill="#fff" font-weight="600">焼成の影響</text>
+        <text x="415" y="84" font-size="11" fill="#cdd4da">例: 還元は暗く渋く</text>
+        <text x="499" y="76" font-size="22" fill="#6b7480">+</text>
+        <rect x="518" y="30" width="150" height="76" rx="12" fill="#155e75"/>
+        <text x="593" y="56" font-size="13" fill="#fff" font-weight="600">組み合わせルール</text>
+        <text x="593" y="76" font-size="10.5" fill="#d5e0e4">特定の組み合わせで</text>
+        <text x="593" y="92" font-size="10.5" fill="#d5e0e4">起こる特別な変化</text>
+        <text x="687" y="76" font-size="22" fill="#6b7480">=</text>
+        <rect x="706" y="22" width="102" height="92" rx="12" fill="#796244" stroke="#5f4c34" stroke-width="2"/>
+        <text x="757" y="62" font-size="13" fill="#fff" font-weight="600">最終の色</text>
+        <text x="757" y="84" font-size="11" fill="#e8dcc8">+質感</text>
+      </g>
+    </svg>
+  </div>
+  <p class="figcap">図4: 色の決まり方。それぞれの要素が数値(色・強さ)を持ち、順番に合成されます</p>
+
+  <h2>「組み合わせルール」とは</h2>
+  <div class="panel">
+    <p>陶芸には「この組み合わせのときだけ特別なことが起こる」という知見があります。それをルールとして登録してあり、該当する選択のときだけ発動します。例:</p>
+    <div class="figure">
+      <svg viewBox="0 0 820 120" role="img" aria-label="緑釉の例: 酸化では鮮やかな緑、還元では赤褐色">
+        <g font-family="Hiragino Kaku Gothic ProN, Hiragino Sans, sans-serif">
+          <text x="70" y="45" font-size="13" fill="#15181d" font-weight="600">同じ「緑釉」でも…</text>
+          <rect x="250" y="16" width="240" height="40" rx="20" fill="#ffffff" stroke="#aab3bd"/>
+          <text x="300" y="41" font-size="12.5" fill="#15181d">酸化で焼くと →</text>
+          <rect x="420" y="24" width="56" height="24" rx="6" fill="#37a84a"/>
+          <text x="510" y="41" font-size="12.5" fill="#59616c">鮮やかな緑</text>
+          <rect x="250" y="68" width="240" height="40" rx="20" fill="#ffffff" stroke="#aab3bd"/>
+          <text x="300" y="93" font-size="12.5" fill="#15181d">還元で焼くと →</text>
+          <rect x="420" y="76" width="56" height="24" rx="6" fill="#8a4b38"/>
+          <text x="513" y="93" font-size="12.5" fill="#59616c">赤褐色に変化</text>
+        </g>
+      </svg>
+    </div>
+    <p class="figcap">図5: ルールの例。「唐土×灰釉×還元は青緑になる」「白磁×灰釉×還元は青白くなる」なども実物の観察から登録されています</p>
+  </div>
+
+  <h2>質感は「層」を重ねて描く</h2>
+  <div class="panel">
+    <p>色が決まったら、次は「描き方」です。陶器らしさは色だけでなく、<strong>表面の細かな表情</strong>から生まれます。シミュレーターは器の絵を透明なシートの重なりとして描いています。</p>
+  </div>
+  <div class="figure">
+    <svg viewBox="0 0 820 330" role="img" aria-label="レイヤー合成の図解: 下から素焼き、土の色、釉薬の色、質感、陰影、ツヤの層を重ねる">
+      <g font-family="Hiragino Kaku Gothic ProN, Hiragino Sans, sans-serif">
+        <!-- 斜めに重なる層 -->
+        <g transform="translate(60,20)">
+          <g transform="skewX(-18)">
+            <rect x="60" y="250" width="300" height="34" rx="6" fill="#d8cdb4" stroke="#aeb7c2"/>
+            <rect x="72" y="208" width="300" height="34" rx="6" fill="#8b4a36" opacity="0.92"/>
+            <rect x="84" y="166" width="300" height="34" rx="6" fill="#afb197" opacity="0.88"/>
+            <rect x="96" y="124" width="300" height="34" rx="6" fill="#7d8a6a" opacity="0.8"/>
+            <rect x="108" y="82" width="300" height="34" rx="6" fill="#4a4438" opacity="0.65"/>
+            <rect x="120" y="40" width="300" height="34" rx="6" fill="#ffffff" opacity="0.9" stroke="#e0e4e9"/>
+          </g>
+        </g>
+        <!-- ラベル -->
+        <g font-size="12.5" fill="#15181d">
+          <text x="480" y="292">1. 素焼きの器(かたちの土台)</text>
+          <text x="492" y="250">2. 土の色(素地の色味)</text>
+          <text x="504" y="208">3. 釉薬の色(透け具合も再現)</text>
+          <text x="516" y="166">4. 質感(貫入・鉄点・結晶・垂れ・窯変)</text>
+          <text x="528" y="124">5. 陰影(丸みの立体感)</text>
+          <text x="540" y="82">6. ツヤ(光の反射。光沢の強さで変化)</text>
+        </g>
+        <text x="180" y="322" font-size="12" fill="#59616c">↑ 下から順に重ねて1枚の絵に</text>
+      </g>
+    </svg>
+  </div>
+  <p class="figcap">図6: レイヤー合成。選択やスライダーを変えると、対応する層だけが変わって即座に再描画されます</p>
+
+  <h2>再現している質感の種類</h2>
+  <div class="panel">
+    <table>
+      <tr><th>貫入(かんにゅう)</th><td>釉薬の表面に入る細かいひび模様。透明感のある釉薬に出やすい。</td></tr>
+      <tr><th>鉄点(てってん)</th><td>土や釉薬に含まれる鉄分が焼成で現れる小さな黒点。赤土や鉄釉で多い。</td></tr>
+      <tr><th>結晶</th><td>結晶釉で花が咲いたように現れる模様。</td></tr>
+      <tr><th>ビードロ・灰流れ</th><td>薪窯で灰が釉薬と溶け合い、ガラス質になって上から下へ流れる筋。</td></tr>
+      <tr><th>窯変(ようへん)</th><td>窯の中の炎や置き場所による偶然の色ムラ。薪窯ほど強く出る。</td></tr>
+      <tr><th>素地の露出</th><td>高台(器の足)など釉薬がかからない部分に見える土そのものの色。</td></tr>
+    </table>
+  </div>
+
+  <h2>実物に近づける工程(色の検証)</h2>
+  <div class="panel">
+    <p>シミュレーションの色は「それらしい」だけでは意味がありません。<strong>実物の写真と数値で見比べて、ずれていたら直す</strong>——このループを開発の中で回しています。</p>
+  </div>
+  <div class="figure">
+    <svg viewBox="0 0 820 200" role="img" aria-label="検証ループ: シミュレーション結果と実物写真を比較し、ずれをパラメータ調整に反映する">
+      <defs>
+        <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0 L10 5 L0 10 z" fill="#6b7480"/>
+        </marker>
+      </defs>
+      <g font-family="Hiragino Kaku Gothic ProN, Hiragino Sans, sans-serif" text-anchor="middle">
+        <rect x="40" y="46" width="190" height="86" rx="12" fill="#ffffff" stroke="#aab3bd"/>
+        <text x="135" y="80" font-size="13.5" font-weight="600" fill="#15181d">シミュレーション</text>
+        <text x="135" y="104" font-size="11.5" fill="#59616c">見本レシピ5種を描画</text>
+        <rect x="315" y="46" width="190" height="86" rx="12" fill="#ffffff" stroke="#aab3bd"/>
+        <text x="410" y="80" font-size="13.5" font-weight="600" fill="#15181d">実物の写真と比較</text>
+        <text x="410" y="104" font-size="11.5" fill="#59616c">色を数値で測って照合</text>
+        <rect x="590" y="46" width="190" height="86" rx="12" fill="#e3eef3" stroke="#aab3bd"/>
+        <text x="685" y="80" font-size="13.5" font-weight="600" fill="#15181d">数値を調整</text>
+        <text x="685" y="104" font-size="11.5" fill="#59616c">色・ルール・質感の強さ</text>
+        <line x1="230" y1="89" x2="311" y2="89" stroke="#6b7480" stroke-width="2" marker-end="url(#ar3)"/>
+        <line x1="505" y1="89" x2="586" y2="89" stroke="#6b7480" stroke-width="2" marker-end="url(#ar3)"/>
+        <path d="M 685 132 Q 685 178 410 178 Q 135 178 135 136" fill="none" stroke="#6b7480" stroke-width="2" marker-end="url(#ar3)" stroke-dasharray="6 5"/>
+        <text x="410" y="170" font-size="11.5" fill="#59616c">調整を反映してもう一度…</text>
+      </g>
+    </svg>
+  </div>
+  <p class="figcap">図7: 色検証のループ。第1回の検証で「唐土の青緑」「結晶釉の飴色」などが実物に合わせて修正されました</p>
+
+  <div class="pager">
+    <a href="./screen.html">← STEP 1: 画面の見方</a>
+    <a href="./detail.html">STEP 3: 詳細設計 →</a>
+  </div>
+  <footer>台ヶ森焼 陶器色味シミュレーター 設計文書(アルファ版) / <a href="../">シミュレーターへ戻る</a></footer>
+</div>
+</body>
+</html>

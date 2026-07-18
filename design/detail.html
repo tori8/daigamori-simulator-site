@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>詳細設計 | 設計文書</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍵</text></svg>" />
+<link rel="stylesheet" href="./design.css" />
+</head>
+<body>
+<div class="wrap">
+  <div class="crumbs"><a href="./index.html">設計文書トップ</a> › <a href="./screen.html">画面の見方</a> › <a href="./color.html">色の仕組み</a> › 詳細設計</div>
+  <h1>STEP 3: 詳細設計<span class="alpha">アルファ版</span></h1>
+  <p class="lead">データの持ち方・描画方式・品質の保ち方。いちばん深い階層です。</p>
+
+  <h2>すべては「データ表」から</h2>
+  <div class="panel">
+    <p>選択肢(土・釉薬・形状・焼成)は、プログラムの中に直接書かず、<strong>1つずつがデータのカード</strong>として管理されています。カードには表示名・説明文と「色と質感の数値」が入っています。</p>
+    <div class="figure">
+      <svg viewBox="0 0 820 220" role="img" aria-label="データカードの例: 灰釉のカードに色、ツヤ、透け感、流れなどの数値が入っている">
+        <g font-family="Hiragino Kaku Gothic ProN, Hiragino Sans, sans-serif">
+          <rect x="150" y="16" width="250" height="188" rx="14" fill="#ffffff" stroke="#aab3bd"/>
+          <rect x="150" y="16" width="250" height="44" rx="14" fill="#afb197"/>
+          <rect x="150" y="46" width="250" height="14" fill="#afb197"/>
+          <text x="170" y="45" font-size="15" font-weight="600" fill="#fff">カードの例:「灰釉」</text>
+          <g font-size="12.5" fill="#15181d">
+            <text x="172" y="86">基本の色</text><rect x="300" y="74" width="60" height="16" rx="4" fill="#afb197" stroke="#98997e"/>
+            <text x="172" y="112">ツヤの強さ</text><text x="330" y="112" text-anchor="middle" fill="#59616c">やや強い</text>
+            <text x="172" y="138">土色の透け感</text><text x="330" y="138" text-anchor="middle" fill="#59616c">中くらい</text>
+            <text x="172" y="164">灰の流れやすさ</text><text x="330" y="164" text-anchor="middle" fill="#59616c">あり</text>
+            <text x="172" y="190">窯変の出やすさ</text><text x="330" y="190" text-anchor="middle" fill="#59616c">やや高い</text>
+          </g>
+          <g font-size="12.5" fill="#59616c">
+            <text x="470" y="60">こうしたカードが</text>
+            <text x="470" y="86">土 3枚 / 釉薬 8枚 / 形状 8枚</text>
+            <text x="470" y="112">焼成方式 2枚 / 焼き方 3枚</text>
+            <text x="470" y="150">+ 組み合わせルール表</text>
+            <text x="470" y="176">+ 見本レシピ5種</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+    <p class="figcap">図8: データカードのイメージ(数値は「強さ」を0〜1で持ち、画面のスライダーはこの数値を一時的に上書きします)</p>
+    <p>この方式の利点は、<strong>釉薬が増えてもカードを1枚足すだけ</strong>で画面に反映されること。また色の調整はカードの数値を直すだけで、プログラム本体に手を入れずに済みます。データの元は作り手の要件表(Excel)で、そこから自動変換しています。</p>
+  </div>
+
+  <h2>価格は「あとから変えられる値」</h2>
+  <div class="panel">
+    <p>価格の目安は運用中に頻繁に変わる前提のため、アプリ本体に埋め込まず、<strong>公開サイト上の小さな価格ファイルを表示のたびに読み込む</strong>方式です。価格の変更はこのファイルを書き換えるだけで、アプリの更新作業は不要です。金額が未定の器は「準備中」と表示します。</p>
+  </div>
+
+  <h2>2Dの描き方 — 4枚の下絵</h2>
+  <div class="panel">
+    <p>2D表示は、器1種類につき<strong>4枚の下絵(線画・ベース・陰影・ツヤ)</strong>を用意し、STEP 2の「層の重なり」の土台にしています。写実的な陰影をあらかじめ絵として持つことで、軽い処理で本物らしい立体感が出せます。</p>
+    <div class="figure">
+      <svg viewBox="0 0 820 150" role="img" aria-label="4枚の下絵: 線画、ベース、陰影、ツヤを重ねて完成">
+        <g font-family="Hiragino Kaku Gothic ProN, Hiragino Sans, sans-serif" text-anchor="middle" font-size="12">
+          <g>
+            <rect x="30" y="20" width="120" height="90" rx="10" fill="#ffffff" stroke="#aab3bd"/>
+            <path d="M 62 45 Q 60 38 66 37 L 114 37 Q 120 38 118 45 L 114 85 Q 113 92 106 93 L 74 93 Q 67 92 66 85 Z" fill="none" stroke="#6b7480" stroke-width="1.5"/>
+            <text x="90" y="128" fill="#15181d">線画</text>
+          </g>
+          <g>
+            <rect x="200" y="20" width="120" height="90" rx="10" fill="#ffffff" stroke="#aab3bd"/>
+            <path d="M 232 45 Q 230 38 236 37 L 284 37 Q 290 38 288 45 L 284 85 Q 283 92 276 93 L 244 93 Q 237 92 236 85 Z" fill="#d9d2c0"/>
+            <text x="260" y="128" fill="#15181d">ベース(色を乗せる土台)</text>
+          </g>
+          <g>
+            <rect x="370" y="20" width="120" height="90" rx="10" fill="#ffffff" stroke="#aab3bd"/>
+            <path d="M 402 45 Q 400 38 406 37 L 454 37 Q 460 38 458 45 L 454 85 Q 453 92 446 93 L 414 93 Q 407 92 406 85 Z" fill="#7c7565"/>
+            <path d="M 406 40 L 420 40 L 416 90 L 408 90 Z" fill="#5d574a"/>
+            <text x="430" y="128" fill="#15181d">陰影</text>
+          </g>
+          <g>
+            <rect x="540" y="20" width="120" height="90" rx="10" fill="#ffffff" stroke="#aab3bd"/>
+            <path d="M 572 45 Q 570 38 576 37 L 624 37 Q 630 38 628 45 L 624 85 Q 623 92 616 93 L 584 93 Q 577 92 576 85 Z" fill="#efe9da"/>
+            <ellipse cx="590" cy="55" rx="6" ry="14" fill="#fff"/>
+            <text x="600" y="128" fill="#15181d">ツヤ(ハイライト)</text>
+          </g>
+          <text x="690" y="70" font-size="20" fill="#6b7480">=</text>
+          <g>
+            <rect x="710" y="20" width="90" height="90" rx="10" fill="#e3eef3" stroke="#aab3bd"/>
+            <path d="M 732 45 Q 730 38 736 37 L 774 37 Q 780 38 778 45 L 774 85 Q 773 92 766 93 L 744 93 Q 737 92 736 85 Z" fill="#8f7a52"/>
+            <ellipse cx="746" cy="55" rx="4" ry="11" fill="#fff" opacity="0.7"/>
+            <text x="755" y="128" fill="#15181d">完成</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+    <p class="figcap">図9: 4枚の下絵方式。色や質感の層は、この下絵の上に重ねられます</p>
+  </div>
+
+  <h2>3Dの描き方 — ろくろと同じ原理</h2>
+  <div class="panel">
+    <p>3D表示は、器の<strong>断面の輪郭線をぐるりと一回転</strong>させて立体を作ります。ろくろで器を挽くのと同じ原理です。表面には、色・凹凸・ツヤの3種類の「巻き付ける画像」をその場で生成して貼っています。</p>
+    <div class="figure">
+      <svg viewBox="0 0 820 190" role="img" aria-label="断面の輪郭を回転させて立体を作り、質感画像を巻き付ける">
+        <defs>
+          <marker id="ar4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0 L10 5 L0 10 z" fill="#6b7480"/>
+          </marker>
+        </defs>
+        <g font-family="Hiragino Kaku Gothic ProN, Hiragino Sans, sans-serif" text-anchor="middle" font-size="12">
+          <rect x="40" y="20" width="180" height="130" rx="10" fill="#ffffff" stroke="#aab3bd"/>
+          <path d="M 130 40 L 130 135" stroke="#aab3bd" stroke-dasharray="4 4"/>
+          <path d="M 132 45 Q 172 55 168 90 Q 166 120 150 128 L 138 132" fill="none" stroke="#155e75" stroke-width="2.5"/>
+          <text x="130" y="172" fill="#15181d">① 断面の輪郭線</text>
+
+          <line x1="230" y1="85" x2="266" y2="85" stroke="#6b7480" stroke-width="2" marker-end="url(#ar4)"/>
+
+          <rect x="280" y="20" width="180" height="130" rx="10" fill="#ffffff" stroke="#aab3bd"/>
+          <ellipse cx="370" cy="52" rx="42" ry="12" fill="none" stroke="#155e75" stroke-width="2"/>
+          <path d="M 328 52 L 332 110 Q 334 126 352 128 L 388 128 Q 406 126 408 110 L 412 52" fill="none" stroke="#155e75" stroke-width="2"/>
+          <path d="M 402 30 A 46 14 0 1 1 336 28" fill="none" stroke="#6b7480" stroke-width="1.5" marker-end="url(#ar4)"/>
+          <text x="370" y="172" fill="#15181d">② 一回転させて立体に</text>
+
+          <line x1="470" y1="85" x2="506" y2="85" stroke="#6b7480" stroke-width="2" marker-end="url(#ar4)"/>
+
+          <rect x="520" y="20" width="260" height="130" rx="10" fill="#ffffff" stroke="#aab3bd"/>
+          <rect x="544" y="42" width="66" height="44" rx="6" fill="#8f7a52"/>
+          <rect x="616" y="42" width="66" height="44" rx="6" fill="#a9a091"/>
+          <rect x="688" y="42" width="66" height="44" rx="6" fill="#e8e2d2"/>
+          <text x="577" y="102" font-size="10.5" fill="#59616c">色</text>
+          <text x="649" y="102" font-size="10.5" fill="#59616c">凹凸</text>
+          <text x="721" y="102" font-size="10.5" fill="#59616c">ツヤ</text>
+          <text x="650" y="130" fill="#15181d">③ 3種類の画像を巻き付ける</text>
+          <text x="650" y="172" fill="#15181d">質感つきの3D表示が完成</text>
+        </g>
+      </svg>
+    </div>
+    <p class="figcap">図10: 3Dの作り方。3D用の重いプログラムは「3D」ボタンを押した人だけが読み込む設計で、2Dだけ使う人の表示速度に影響しません</p>
+  </div>
+
+  <h2>品質を保つ体制</h2>
+  <div class="panel">
+    <p>このアプリは役割を分けたチーム体制で開発しており、作った人と確認する人を分けています。</p>
+    <table>
+      <tr><th>作る役</th><td>描画エンジン担当・画面担当・データ担当がそれぞれの持ち場だけを変更する(他の持ち場には触らない決まり)</td></tr>
+      <tr><th>目利き役</th><td>シミュレーション結果と実物写真を数値で比較し、「どの数値をどちらに動かすべきか」を提案する</td></tr>
+      <tr><th>監査役</th><td>仕様との食い違い・不具合・文章の誤りを批判的に検査する。指摘は記録に残し、全件対応してから公開する</td></tr>
+    </table>
+    <p class="lead">実際に、公開前の監査で「説明文の誤字」「画面文言の不正確さ」などが見つかり修正されています。開発の全記録(誰が・いつ・何をしたか)も文書として残しています。</p>
+  </div>
+
+  <h2>今後の予定(アルファ版時点)</h2>
+  <div class="panel">
+    <table>
+      <tr><th>価格表示</th><td>金額データが確定し次第、「準備中」から実額表示に切り替え</td></tr>
+      <tr><th>色の精度</th><td>実物写真との検証ループを継続(特に結晶釉の彩度)</td></tr>
+      <tr><th>急須の3D</th><td>注ぎ口・持ち手のある形は回転では作れないため、専用の立体データを検討</td></tr>
+      <tr><th>レシピ機能</th><td>気に入った組み合わせの保存・共有、複数の組み合わせの比較表示</td></tr>
+    </table>
+  </div>
+
+  <div class="pager">
+    <a href="./color.html">← STEP 2: 色と質感が決まる仕組み</a>
+    <a href="./index.html">設計文書トップへ →</a>
+  </div>
+  <footer>台ヶ森焼 陶器色味シミュレーター 設計文書(アルファ版) / <a href="../">シミュレーターへ戻る</a></footer>
+</div>
+</body>
+</html>

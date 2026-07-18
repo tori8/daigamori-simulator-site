@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>設計文書 | 台ヶ森焼 陶器色味シミュレーター</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍵</text></svg>" />
+<link rel="stylesheet" href="./design.css" />
+</head>
+<body>
+<div class="wrap">
+  <div class="crumbs"><a href="../">← シミュレーターに戻る</a></div>
+
+  <div class="hero">
+    <div class="kicker">DESIGN DOCUMENT</div>
+    <h1>焼く前に、色がわかる。<span class="alpha">アルファ版</span></h1>
+    <p>台ヶ森焼 陶器色味シミュレーター 設計文書 — このアプリが「何をするものか」「どう動いているか」を、図解で大きな話から細かい話へ掘り下げます。</p>
+  </div>
+
+  <h2>課題</h2>
+  <p class="statement">陶器の色は、<span class="em">焼き上がるまで誰にもわからない</span>。</p>
+  <p>同じ形でも「土」「釉薬(うわぐすり)」「焼き方」の組み合わせで、仕上がりの色も表情もまったく変わります。試作には材料費と窯の時間がかかり、全部を試すことはできません。</p>
+
+  <h2>解決</h2>
+  <p class="statement">その組み合わせを、<span class="em">画面上で試せる</span>ようにした。</p>
+  <p>購入を検討する方が好みの組み合わせを探したり、作り手との相談の たたき台にできるWebアプリです。スマホでも使えます。</p>
+
+  <div class="figure">
+    <svg viewBox="0 0 820 200" role="img" aria-label="全体の流れ: 選ぶ、掛け合わせる、描く、実物と比べる">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0 L10 5 L0 10 z" fill="#6b7480"/>
+        </marker>
+      </defs>
+      <g font-family="Hiragino Kaku Gothic ProN, Hiragino Sans, sans-serif">
+        <rect x="10" y="34" width="180" height="126" rx="14" fill="#fff" stroke="#15181d" stroke-width="2"/>
+        <text x="100" y="66" text-anchor="middle" font-size="16" font-weight="800" fill="#15181d">1. 選ぶ</text>
+        <text x="100" y="94" text-anchor="middle" font-size="12" fill="#59616c">土・釉薬・形状</text>
+        <text x="100" y="114" text-anchor="middle" font-size="12" fill="#59616c">焼成方式・焼き方</text>
+        <text x="100" y="140" text-anchor="middle" font-size="11" fill="#8a919b">5つの質問に答える感覚</text>
+
+        <rect x="220" y="34" width="180" height="126" rx="14" fill="#fff" stroke="#15181d" stroke-width="2"/>
+        <text x="310" y="66" text-anchor="middle" font-size="16" font-weight="800" fill="#15181d">2. 掛け合わせる</text>
+        <text x="310" y="94" text-anchor="middle" font-size="12" fill="#59616c">組み合わせごとの</text>
+        <text x="310" y="114" text-anchor="middle" font-size="12" fill="#59616c">色・質感を計算</text>
+        <text x="310" y="140" text-anchor="middle" font-size="11" fill="#8a919b">陶芸の知見をルール化</text>
+
+        <rect x="430" y="34" width="180" height="126" rx="14" fill="#fff" stroke="#15181d" stroke-width="2"/>
+        <text x="520" y="66" text-anchor="middle" font-size="16" font-weight="800" fill="#15181d">3. 描く</text>
+        <text x="520" y="94" text-anchor="middle" font-size="12" fill="#59616c">器の絵に色と質感を</text>
+        <text x="520" y="114" text-anchor="middle" font-size="12" fill="#59616c">重ねて表示(2D/3D)</text>
+        <text x="520" y="140" text-anchor="middle" font-size="11" fill="#8a919b">貫入・鉄点・垂れも再現</text>
+
+        <rect x="640" y="34" width="170" height="126" rx="14" fill="#1b2733"/>
+        <text x="725" y="66" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">4. 実物と比べる</text>
+        <text x="725" y="94" text-anchor="middle" font-size="12" fill="#b9c6d2">本物の写真と見比べ</text>
+        <text x="725" y="114" text-anchor="middle" font-size="12" fill="#b9c6d2">色を調整し続ける</text>
+        <text x="725" y="140" text-anchor="middle" font-size="11" fill="#7ccce4">開発の裏側の工程</text>
+
+        <line x1="190" y1="97" x2="216" y2="97" stroke="#6b7480" stroke-width="2.5" marker-end="url(#ar)"/>
+        <line x1="400" y1="97" x2="426" y2="97" stroke="#6b7480" stroke-width="2.5" marker-end="url(#ar)"/>
+        <line x1="610" y1="97" x2="636" y2="97" stroke="#6b7480" stroke-width="2.5" marker-end="url(#ar)"/>
+      </g>
+    </svg>
+  </div>
+  <p class="figcap">図1: 全体像。1〜3が画面で体験できる部分、4は精度を上げるための開発工程</p>
+
+  <h2>選べる組み合わせ</h2>
+  <div class="stats">
+    <div class="stat"><span class="num">3</span><span class="lbl">土(素地)</span></div>
+    <div class="stat"><span class="num">8</span><span class="lbl">釉薬</span></div>
+    <div class="stat"><span class="num">8</span><span class="lbl">形状</span></div>
+    <div class="stat"><span class="num">2<small>×</small>3</span><span class="lbl">焼成方式 × 焼き方</span></div>
+    <div class="stat total"><span class="num">1,152</span><span class="lbl">通りの組み合わせ</span></div>
+  </div>
+  <div class="panel">
+    <table>
+      <tr><th>① 土(素地)</th><td>赤土 / 唐土 / 白磁</td></tr>
+      <tr><th>② 釉薬</th><td>透明釉 / 灰釉 / マット釉 / 結晶釉 / 青磁釉 / 鉄釉 / 緑釉 / 織部釉</td></tr>
+      <tr><th>③ 形状</th><td>皿 / 湯呑 / 急須 / ぐい飲み / 徳利 / 茶碗 / 植木鉢 / 丼</td></tr>
+      <tr><th>④ 焼成方式</th><td>酸化 / 還元 — 窯の中の空気の状態。色が大きく変わる</td></tr>
+      <tr><th>⑤ 焼き方</th><td>薪 / ガス / 電気 — 窯の種類。薪は偶然の変化が豊か</td></tr>
+    </table>
+    <p class="lead">この全部を試作するのは現実的でないからこそ、シミュレーションに意味があります。</p>
+  </div>
+
+  <h2>さらに詳しく — 3段階で掘り下げる</h2>
+  <div class="cards">
+    <a class="card" href="./screen.html">
+      <span class="no">STEP 1</span>
+      <div class="t">画面の見方</div>
+      <div class="d">どこで何を選び、結果がどこに出るのか。画面の構成を図解します。</div>
+      <span class="go">このページを読む →</span>
+    </a>
+    <a class="card" href="./color.html">
+      <span class="no">STEP 2</span>
+      <div class="t">色と質感が決まる仕組み</div>
+      <div class="d">土×釉薬×焼成の掛け合わせと、貫入・鉄点などの質感表現の考え方。</div>
+      <span class="go">このページを読む →</span>
+    </a>
+    <a class="card" href="./detail.html">
+      <span class="no">STEP 3</span>
+      <div class="t">詳細設計</div>
+      <div class="d">データの持ち方、2D/3Dの描画方式、品質を保つ体制まで。</div>
+      <span class="go">このページを読む →</span>
+    </a>
+  </div>
+
+  <div class="note">この文書はアルファ版です。開発の進行により、実際の画面や仕様と一部異なる場合があります。</div>
+
+  <footer>台ヶ森焼 陶器色味シミュレーター 設計文書(アルファ版) / <a href="../">シミュレーターへ戻る</a></footer>
+</div>
+</body>
+</html>

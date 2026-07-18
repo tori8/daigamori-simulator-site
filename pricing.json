@@ -1,0 +1,16 @@
+{
+  "_説明": "価格目安(円)。運用中に随時更新してよい変更可能値。null は「準備中」表示になる。編集方法は README の「価格の更新」参照",
+  "updatedAt": "2026-07-13",
+  "currency": "JPY",
+  "priceNote": "焼成条件により前後する場合があります",
+  "byShape": {
+    "sara": null,
+    "yunomi": null,
+    "kyusu": null,
+    "guinomi": null,
+    "tokkuri": null,
+    "chawan": null,
+    "uekihachi": null,
+    "donburi": null
+  }
+}

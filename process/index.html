@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>開発プロセス | 台ヶ森焼 陶器色味シミュレーター</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍵</text></svg>" />
+<link rel="stylesheet" href="../design/design.css" />
+</head>
+<body>
+<div class="wrap">
+  <div class="crumbs"><a href="../">← シミュレーターに戻る</a> / <a href="../design/">設計文書</a></div>
+
+  <div class="hero">
+    <div class="kicker">DEVELOPMENT PROCESS</div>
+    <h1>AIエージェントの分業で作る。<span class="alpha">アルファ版</span></h1>
+    <p>このシミュレーターは、Anthropic社のAI開発ツール「Claude Code」を使い、役割分担したAIエージェントのチームが人間のディレクションのもとで開発しています。そのプロセスを紹介します。</p>
+  </div>
+
+  <h2>Claude Code とは</h2>
+  <p class="statement">人間が方針を決め、<span class="em">AIがコードを書き、検証し、記録する</span>。</p>
+  <p>Claude Code は、対話で指示を受けてプログラムの実装・テスト・文書化までを行うAIコーディングエージェントです。本プロジェクトでは、1つのAIに全部を任せるのではなく、<strong>職人の工房のように役割を分けた複数のエージェント</strong>を立てて開発しています。</p>
+
+  <h2>開発体制 — 6つの役割</h2>
+  <div class="figure">
+    <svg viewBox="0 0 840 400" role="img" aria-label="開発体制図: 施主の指示を棟梁が受け、3人の作り手エージェントに割り振り、2人の検査エージェントが確認する">
+      <defs>
+        <marker id="pa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0 L10 5 L0 10 z" fill="#6b7480"/>
+        </marker>
+      </defs>
+      <g font-family="Hiragino Kaku Gothic ProN, Hiragino Sans, sans-serif">
+        <!-- 施主 -->
+        <rect x="330" y="14" width="180" height="58" rx="12" fill="#1b2733"/>
+        <text x="420" y="38" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">施主(人間)</text>
+        <text x="420" y="58" text-anchor="middle" font-size="10.5" fill="#b9c6d2">要件・判断・承認</text>
+        <line x1="420" y1="72" x2="420" y2="102" stroke="#6b7480" stroke-width="2" marker-end="url(#pa)"/>
+
+        <!-- 棟梁 -->
+        <rect x="310" y="106" width="220" height="64" rx="12" fill="#155e75"/>
+        <text x="420" y="132" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">棟梁(メインセッション)</text>
+        <text x="420" y="152" text-anchor="middle" font-size="10.5" fill="#d5e0e4">段取り・契約書の管理・統合</text>
+
+        <line x1="360" y1="170" x2="140" y2="212" stroke="#6b7480" stroke-width="2" marker-end="url(#pa)"/>
+        <line x1="420" y1="170" x2="420" y2="212" stroke="#6b7480" stroke-width="2" marker-end="url(#pa)"/>
+        <line x1="480" y1="170" x2="700" y2="212" stroke="#6b7480" stroke-width="2" marker-end="url(#pa)"/>
+
+        <!-- 作り手3人 -->
+        <rect x="30" y="216" width="220" height="76" rx="12" fill="#fff" stroke="#15181d" stroke-width="2"/>
+        <text x="140" y="242" text-anchor="middle" font-size="13.5" font-weight="800" fill="#15181d">釉薬データ師</text>
+        <text x="140" y="262" text-anchor="middle" font-size="10.5" fill="#59616c">土・釉薬・ルールのデータ管理</text>
+        <text x="140" y="280" text-anchor="middle" font-size="10.5" fill="#8a919b">担当: データ表</text>
+
+        <rect x="310" y="216" width="220" height="76" rx="12" fill="#fff" stroke="#15181d" stroke-width="2"/>
+        <text x="420" y="242" text-anchor="middle" font-size="13.5" font-weight="800" fill="#15181d">合成職人</text>
+        <text x="420" y="262" text-anchor="middle" font-size="10.5" fill="#59616c">色合成・2D/3D描画エンジン</text>
+        <text x="420" y="280" text-anchor="middle" font-size="10.5" fill="#8a919b">担当: 描画プログラム</text>
+
+        <rect x="590" y="216" width="220" height="76" rx="12" fill="#fff" stroke="#15181d" stroke-width="2"/>
+        <text x="700" y="242" text-anchor="middle" font-size="13.5" font-weight="800" fill="#15181d">UI大工</text>
+        <text x="700" y="262" text-anchor="middle" font-size="10.5" fill="#59616c">画面・操作まわりの実装</text>
+        <text x="700" y="280" text-anchor="middle" font-size="10.5" fill="#8a919b">担当: 画面プログラム</text>
+
+        <!-- 検査役2人 -->
+        <rect x="170" y="322" width="220" height="64" rx="12" fill="#e3eef3" stroke="#155e75" stroke-width="2"/>
+        <text x="280" y="346" text-anchor="middle" font-size="13.5" font-weight="800" fill="#15181d">目利き(色検証)</text>
+        <text x="280" y="366" text-anchor="middle" font-size="10.5" fill="#59616c">実物写真と数値で色を照合</text>
+
+        <rect x="450" y="322" width="220" height="64" rx="12" fill="#e3eef3" stroke="#155e75" stroke-width="2"/>
+        <text x="560" y="346" text-anchor="middle" font-size="13.5" font-weight="800" fill="#15181d">監査役</text>
+        <text x="560" y="366" text-anchor="middle" font-size="10.5" fill="#59616c">仕様・実装・文章を批判的に検査</text>
+      </g>
+    </svg>
+  </div>
+  <p class="figcap">図A: 開発体制。「作る人」と「検査する人」を分け、検査役は作り手の自己申告を信用しない決まり</p>
+
+  <div class="panel">
+    <p>各エージェントには<strong>「縄張り」(変更してよいファイルの範囲)</strong>が決められており、担当外のファイルには触れません。必要が生じたら棟梁経由で担当に依頼します。これにより、複数のAIが同時に作業しても衝突しません。</p>
+  </div>
+
+  <h2>進め方の3つの特徴</h2>
+
+  <div class="panel">
+    <p><strong>1. 契約書ファースト(並行開発)</strong> — 描画エンジンと画面のように連携が必要な部分は、先に「契約書」(受け渡しの取り決めを書いた文書)を棟梁が作り、両者は<strong>互いのコードを見ずに契約書だけを頼りに同時進行</strong>します。会話の記憶ではなく文書で仕様を共有するのが原則です。</p>
+    <div class="figure">
+      <svg viewBox="0 0 820 170" role="img" aria-label="契約駆動並行開発: 契約書を先に決め、エンジン担当と画面担当が同時に作業し、統合する">
+        <defs>
+          <marker id="pb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0 L10 5 L0 10 z" fill="#6b7480"/>
+          </marker>
+        </defs>
+        <g font-family="Hiragino Kaku Gothic ProN, Hiragino Sans, sans-serif" text-anchor="middle">
+          <rect x="20" y="55" width="170" height="60" rx="12" fill="#155e75"/>
+          <text x="105" y="80" font-size="13" font-weight="800" fill="#fff">契約書を先に作る</text>
+          <text x="105" y="100" font-size="10.5" fill="#d5e0e4">受け渡しの取り決め</text>
+          <line x1="190" y1="70" x2="266" y2="42" stroke="#6b7480" stroke-width="2" marker-end="url(#pb)"/>
+          <line x1="190" y1="100" x2="266" y2="128" stroke="#6b7480" stroke-width="2" marker-end="url(#pb)"/>
+          <rect x="270" y="14" width="300" height="56" rx="12" fill="#fff" stroke="#15181d" stroke-width="2"/>
+          <text x="420" y="38" font-size="12.5" font-weight="800" fill="#15181d">合成職人: エンジンを実装</text>
+          <text x="420" y="58" font-size="10.5" fill="#59616c">契約どおりの入出力を作る</text>
+          <rect x="270" y="100" width="300" height="56" rx="12" fill="#fff" stroke="#15181d" stroke-width="2"/>
+          <text x="420" y="124" font-size="12.5" font-weight="800" fill="#15181d">UI大工: 画面を実装</text>
+          <text x="420" y="144" font-size="10.5" fill="#59616c">契約だけを頼りに呼び出す</text>
+          <line x1="570" y1="42" x2="646" y2="70" stroke="#6b7480" stroke-width="2" marker-end="url(#pb)"/>
+          <line x1="570" y1="128" x2="646" y2="100" stroke="#6b7480" stroke-width="2" marker-end="url(#pb)"/>
+          <rect x="650" y="55" width="150" height="60" rx="12" fill="#e3eef3" stroke="#155e75" stroke-width="2"/>
+          <text x="725" y="80" font-size="13" font-weight="800" fill="#15181d">統合・確認</text>
+          <text x="725" y="100" font-size="10.5" fill="#59616c">棟梁がまとめる</text>
+        </g>
+      </svg>
+    </div>
+    <p class="figcap">図B: 同時進行(並行開発)。フェーズ1では、この方式でエンジンと画面が一度の手戻りもなく結合できました</p>
+  </div>
+
+  <div class="panel">
+    <p><strong>2. 批判的な監査</strong> — 大きな節目ごとに監査役が成果物を検査します。監査役の決まりは「<strong>褒めるだけのレポートは書かない</strong>」「<strong>読んだだけで問題なしと書かない</strong>(必ず実行して確かめる)」。指摘は「重大 / 要修正 / 提案」に分類され、要修正以上は全件対応してから公開します。</p>
+    <p>実例: 3D機能の監査では、ブラウザを自動操作して<strong>2D↔3Dを20往復させメモリ漏れがないことを実測</strong>した上で、「説明文言が事実と異なるケースがある」等の指摘が出て、修正後にマージ(合流)しました。</p>
+  </div>
+
+  <div class="panel">
+    <p><strong>3. 実物との照合(色検証)</strong> — 「それらしい色」で済ませないため、目利き役が<strong>実物の写真から色を数値(RGB/HSL)で採取</strong>し、シミュレーション出力と比較します。第1回検証では5つの見本レシピのうち3つで大きなずれが見つかり、「唐土×灰釉×還元は青緑が正しい」等の修正がデータに反映されました。</p>
+  </div>
+
+  <h2>これまでの歩み</h2>
+  <div class="figure">
+    <svg viewBox="0 0 820 240" role="img" aria-label="開発タイムライン: データ整備、MVP、公開、色の追い込み、3D、設計文書">
+      <g font-family="Hiragino Kaku Gothic ProN, Hiragino Sans, sans-serif">
+        <line x1="40" y1="60" x2="800" y2="60" stroke="#aab3bd" stroke-width="2.5"/>
+        <g text-anchor="middle">
+          <circle cx="90" cy="60" r="8" fill="#155e75"/>
+          <text x="90" y="34" font-size="11" font-weight="800" fill="#15181d">DAY 1</text>
+          <text x="90" y="92" font-size="11.5" font-weight="700" fill="#15181d">データ整備</text>
+          <text x="90" y="110" font-size="10" fill="#59616c">要件表を読み解き</text>
+          <text x="90" y="125" font-size="10" fill="#59616c">データ表に正規化</text>
+
+          <circle cx="230" cy="60" r="8" fill="#155e75"/>
+          <text x="230" y="34" font-size="11" font-weight="800" fill="#15181d">DAY 1</text>
+          <text x="230" y="92" font-size="11.5" font-weight="700" fill="#15181d">試作版(MVP)</text>
+          <text x="230" y="110" font-size="10" fill="#59616c">エンジン+画面を</text>
+          <text x="230" y="125" font-size="10" fill="#59616c">並行開発→初回監査</text>
+
+          <circle cx="370" cy="60" r="8" fill="#1b2733"/>
+          <text x="370" y="34" font-size="11" font-weight="800" fill="#15181d">DAY 1</text>
+          <text x="370" y="92" font-size="11.5" font-weight="700" fill="#15181d">Web公開</text>
+          <text x="370" y="110" font-size="10" fill="#59616c">コードは非公開のまま</text>
+          <text x="370" y="125" font-size="10" fill="#59616c">アプリだけ公開する構成</text>
+
+          <circle cx="510" cy="60" r="8" fill="#155e75"/>
+          <text x="510" y="34" font-size="11" font-weight="800" fill="#15181d">DAY 1</text>
+          <text x="510" y="92" font-size="11.5" font-weight="700" fill="#15181d">色の追い込み</text>
+          <text x="510" y="110" font-size="10" fill="#59616c">実物写真と照合し修正</text>
+          <text x="510" y="125" font-size="10" fill="#59616c">質感スライダー追加</text>
+
+          <circle cx="650" cy="60" r="8" fill="#155e75"/>
+          <text x="650" y="34" font-size="11" font-weight="800" fill="#15181d">DAY 2-3</text>
+          <text x="650" y="92" font-size="11.5" font-weight="700" fill="#15181d">3D表示</text>
+          <text x="650" y="110" font-size="10" fill="#59616c">別ブランチで試作→監査</text>
+          <text x="650" y="125" font-size="10" fill="#59616c">→合流→公開</text>
+
+          <circle cx="770" cy="60" r="8" fill="#1b2733"/>
+          <text x="770" y="34" font-size="11" font-weight="800" fill="#15181d">DAY 6</text>
+          <text x="770" y="92" font-size="11.5" font-weight="700" fill="#15181d">設計文書公開</text>
+          <text x="770" y="110" font-size="10" fill="#59616c">この文書群</text>
+        </g>
+        <text x="420" y="180" text-anchor="middle" font-size="12.5" font-weight="700" fill="#59616c">要件の読み解きから公開まで初日で到達し、以後は「公開したまま」品質を上げ続けています</text>
+      </g>
+    </svg>
+  </div>
+  <p class="figcap">図C: タイムライン。新機能はブランチ(本番に影響しない作業用の分岐)で作り、監査を通してから合流します</p>
+
+  <h2>数字で見る品質管理</h2>
+  <div class="stats">
+    <div class="stat"><span class="num">6<small>役割</small></span><span class="lbl">分業エージェント</span></div>
+    <div class="stat"><span class="num">2<small>回</small></span><span class="lbl">節目の監査</span></div>
+    <div class="stat"><span class="num">15<small>件</small></span><span class="lbl">監査指摘(全件対応)</span></div>
+    <div class="stat total"><span class="num">0<small>件</small></span><span class="lbl">重大指摘</span></div>
+  </div>
+  <div class="panel">
+    <p>すべての作業は<strong>「誰が・いつ・何をしたか」の作業ログ</strong>として記録され、監査レポート・色検証レポートも文書として残っています。AIの作業であっても、後から人間が経緯を追跡できることを重視しています。</p>
+  </div>
+
+  <h2>人間とAIの役割分担</h2>
+  <div class="panel">
+    <table>
+      <tr><th>施主(人間)が決めること</th><td>要件(何を作るか)・デザインの好み・公開/非公開の判断・価格などの運用方針・各節目のGOサイン</td></tr>
+      <tr><th>AIエージェントがやること</th><td>実装・テスト・ブラウザでの動作検証・相互レビュー(監査/色検証)・文書化・デプロイ(公開作業)</td></tr>
+    </table>
+    <p class="lead">たとえば「コードを非公開にしたい」「価格は頻繁に変わる」といった判断は施主が下し、その実現方法の設計と実装をAIが担いました。</p>
+  </div>
+
+  <h2>関連ドキュメント</h2>
+  <div class="cards">
+    <a class="card" href="../design/">
+      <span class="no">DESIGN DOC</span>
+      <div class="t">設計文書</div>
+      <div class="d">アプリそのものの仕組み(画面・色の決まり方・詳細設計)はこちら。</div>
+      <span class="go">設計文書を読む →</span>
+    </a>
+    <a class="card" href="../">
+      <span class="no">APP</span>
+      <div class="t">シミュレーター本体</div>
+      <div class="d">実際に土と釉薬の組み合わせを試せます。</div>
+      <span class="go">シミュレーターを開く →</span>
+    </a>
+  </div>
+
+  <div class="note">この文書はアルファ版です。開発の進行により、記載内容が実際のプロセスと一部異なる場合があります。</div>
+
+  <footer>台ヶ森焼 陶器色味シミュレーター 開発プロセス(アルファ版) / <a href="../">シミュレーターへ戻る</a> / <a href="../design/">設計文書</a></footer>
+</div>
+</body>
+</html>
